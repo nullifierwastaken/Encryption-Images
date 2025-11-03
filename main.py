@@ -80,7 +80,7 @@ elif crypt == "d":
 
     entered = False
     while True:
-        key = input('Please input key ID (enter "list" to list keys, type "add" to add keys): ').lower()
+        key = input('Please input key ID (enter "list" to list keys, type "add" to add keys, type "delete" to delete a key): ').lower()
         while True:
             if entered == True:
                 break
@@ -110,6 +110,17 @@ elif crypt == "d":
             k = input("Insert key: ")
             cursor.execute("INSERT INTO keys (key) VALUES (?);", (k,))
             print("Key added!")
+            db.commit()
+        elif key == "delete":
+            while True:
+                k = input("Enter key (cannot be 1): ")
+                if k != "1":
+                    break
+                else:
+                    print("Key 1 cannot be deleted as it is used to decrypt the password")
+            cursor.execute("DELETE FROM keys WHERE id=?;", (k,))
+            db.commit()
+            print("Key deleted")
         elif key.isdigit():
             keystr = cursor.execute("SELECT key FROM keys WHERE id = ?;", (key,)).fetchone()[0]
             break
