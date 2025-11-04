@@ -1,4 +1,4 @@
-from os import urandom, path, system
+from os import urandom, path, system, name
 from PIL import Image
 import sqlite3
 import base64
@@ -18,7 +18,12 @@ if path.exists("keys.db") == False:
     cursor.execute("INSERT INTO password (password) VALUES (?)", (encrypted_password,))
     cursor.execute("INSERT INTO keys (key) VALUES (?)", (passkey,))
     db.commit()
-    system("chmod 600 keys.db")
+    if name == "nt":
+        system("icacls keys.db /grant %username%:rw")
+        system("icacls keys.db /inheritance:d")
+        system("icacls keys.db /remove *S-1-5-11 *S-1-5-18 *S-1-5-32-544 *S-1-5-32-545")
+    else:
+        system("chmod 600 keys.db")
 
 while True:
     crypt = input("Encrypt or decrypt? (e/d) ").lower()
