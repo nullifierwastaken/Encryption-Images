@@ -10,7 +10,11 @@ if path.exists("keys.db") == False:
     cursor.execute("CREATE TABLE keys (id INTEGER PRIMARY KEY AUTOINCREMENT,key STRING);")
     cursor.execute("CREATE TABLE password (password STRING);")
     password = input("Please input a password for the keys: ")
-    passkey = base64.b64encode(urandom(len(password))).decode('utf-8')[:len(password)]
+    if name == "posix":
+        with open('/dev/random', 'rb') as f:
+            passkey = base64.b64encode(f.read(len(password))).decode("utf-8")[:len(password)]
+    else:
+        passkey = base64.b64encode(urandom(len(password))).decode('utf-8')[:len(password)]
     encrypted_password = ""
     for i in range(len(password)):
         encrypted_password += chr(ord(password[i]) ^ ord(passkey[i]))
