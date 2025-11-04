@@ -34,7 +34,12 @@ while True:
 
 if crypt == "e":
     message = input("Message: ")
-    key = base64.b64encode(urandom(len(message))).decode('utf-8')[:len(message)]
+    if name == "posix":
+        with open('/dev/random', 'rb') as f:
+            key = base64.b64encode(f.read(len(message))).decode("utf-8")[:len(message)]
+    else:
+        #im pretty sure on windows urandom usescryptgenrandom which I think is good enough. idk idc really
+        key = base64.b64encode(urandom(len(message))).decode("utf-8")[:len(message)]
     print(f'This is your key: {key}')
     db = sqlite3.connect("keys.db")
     cursor = db.cursor()
